@@ -37,13 +37,10 @@ docker ps -a
 
 ## 系统架构
 
-```mermaid
-graph TD
-    a(" ") -->|http:80|nginx_proxy
-    nginx_proxy
-    nginx_proxy -->|http| orders
-    orders -->|mysql|mysql[(mysql)]
-```
+<img src="https://mermaid.ink/svg/eyJjb2RlIjoiZ3JhcGggVERcbiAgICBhKFwiIFwiKSAtLT58aHR0cDo4MHxuZ2lueF9wcm94eVxuICAgIG5naW54X3Byb3h5XG4gICAgbmdpbnhfcHJveHkgLS0-fGh0dHB8IG9yZGVyc1xuICAgIG9yZGVycyAtLT58bXlzcWx8bXlzcWxbKG15c3FsKV1cbiIsIm1lcm1haWQiOnsidGhlbWUiOiJkZWZhdWx0In0sInVwZGF0ZUVkaXRvciI6ZmFsc2V9"/>
+
+<span style="font-size:10px;">[chart](https://mermaid-js.github.io/mermaid-live-editor/#/edit/eyJjb2RlIjoiZ3JhcGggVERcbiAgICBhKFwiIFwiKSAtLT58aHR0cDo4MHxuZ2lueF9wcm94eVxuICAgIG5naW54X3Byb3h5XG4gICAgbmdpbnhfcHJveHkgLS0-fGh0dHB8IG9yZGVyc1xuICAgIG9yZGVycyAtLT58bXlzcWx8bXlzcWxbKG15c3FsKV1cbiIsIm1lcm1haWQiOnsidGhlbWUiOiJkZWZhdWx0In0sInVwZGF0ZUVkaXRvciI6ZmFsc2V9)</span>
+
 1. `nginx_proxy`是唯一一个监听80端口的容器，把所有进入到系统的请求通过80端口接入。
 2. `orders`是其中一个微服务，所有微服务都由`nginx_proxy`做反向代理(reverse proxy)，转发http请求。
 3. `mysql`是目前系统中唯一的数据库，以后需要更多不同的数据库，可以再添加其他的容器（如redis、mongodb、postgres等）。
