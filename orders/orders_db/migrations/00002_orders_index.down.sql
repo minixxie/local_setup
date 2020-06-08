@@ -1,0 +1,1 @@
+DROP INDEX idx_order_datetime ON `orders`;

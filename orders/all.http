@@ -1,0 +1,12 @@
+@hostname = orders.local
+@urlPrefix = http://127.0.0.1
+
+###
+POST {{urlPrefix}}/rpc/createOrder
+Content-Type: application/json; charset=utf-8
+Host: {{hostname}}
+
+{
+    "from": {"lat": 22.342021, "lng": 114.127878},
+    "to": {"lat": 22.308595, "lng": 114.222464}
+}

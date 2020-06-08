@@ -1,0 +1,15 @@
+CREATE TABLE `orders` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `from_lat` DECIMAL(10,6) NOT NULL,
+    `from_lng` DECIMAL(10,6) NOT NULL,
+    `to_lat` DECIMAL(10,6) NOT NULL,
+    `to_lng` DECIMAL(10,6) NOT NULL,
+    `status` TINYINT NOT NULL DEFAULT 0 COMMENT '0: ASSIGNING, 1: ONGOING, 2: COMPLETED, 3: CANCELLED',
+    `total_price` DECIMAL(20,4) UNSIGNED NOT NULL,
+    `order_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `created_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `ongoing_time` DATETIME,
+    `completed_time` DATETIME,
+    `cancelled_time` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

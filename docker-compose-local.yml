@@ -1,0 +1,28 @@
+version: '2.1'
+services:
+  mysql:
+    extends:
+      file: ./mysql/docker-compose-local.yml
+      service: mysql
+  orders_db:
+    extends:
+      file: ./orders/orders_db/docker-compose-local.yml
+      service: orders_db
+    depends_on:
+      mysql:
+        condition: service_healthy
+  orders:
+    extends:
+      file: ./orders/docker-compose-local.yml
+      service: orders
+    depends_on:
+      orders_db:
+        condition: service_healthy
+  nginx_proxy:
+    extends:
+      file: ./nginx_proxy/docker-compose.yml
+      service: nginx_proxy
+networks:
+  local:
+    external:
+      name: local

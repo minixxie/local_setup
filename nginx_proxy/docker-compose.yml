@@ -1,0 +1,23 @@
+version: '2.1'
+services:
+  nginx_proxy:
+    container_name: nginx_proxy
+    hostname: nginx_proxy
+    image: jwilder/nginx-proxy:alpine
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "./vhost/:/etc/nginx/vhost.d"
+    networks:
+      - local
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "80"]
+      interval: 5s
+      timeout: 4s
+      retries: 36
+networks:
+  local:
+    external:
+      name: local

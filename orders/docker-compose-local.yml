@@ -1,0 +1,21 @@
+version: '2.1'
+services:
+  orders:
+    container_name: local_orders
+    hostname: local_orders
+    image: local_orders:dont_push
+    build: .
+    working_dir: /app
+    environment:
+      - GIN_MODE=release
+    expose:
+      - "80"
+    networks:
+      - local
+    environment:
+      - VIRTUAL_HOST=orders.local
+      - VIRTUAL_PORT=80
+networks:
+  local:
+    external:
+      name: local

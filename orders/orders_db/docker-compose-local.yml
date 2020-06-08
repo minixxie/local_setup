@@ -1,0 +1,34 @@
+version: '2.1'
+services:
+    orders_db:
+      image: mysql_migrate:dont_push
+      build:
+        context: ../../mysql_migrate
+      container_name: local_orders_db
+      hostname: local_orders_db
+      environment:
+        - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+      volumes:
+        - ".:/db"
+        - "../../.wait-for.sh:/wait-for.sh"
+        - "../../.verify-schema-version.sh:/verify-schema-version.sh"
+      command:
+        - /bin/sh
+        - -c
+        - |
+            /wait-for.sh mysql:3306
+            mysql -A -hmysql -uroot -p${MYSQL_ROOT_PASSWORD} < /db/local_db.sql
+            mysql -A -hmysql -uroot -p${MYSQL_ROOT_PASSWORD} < /db/local_user.sql
+            /migrate -source file:///db/migrations -database "mysql://root:${MYSQL_ROOT_PASSWORD}@tcp(mysql:3306)/local_orders" up
+            sleep 365d # sleep for 1 yr
+      healthcheck:
+        test: /verify-schema-version.sh mysql root hello123 local_orders
+        interval: 60s
+        timeout: 5s
+        retries: 3
+      networks:
+        - local
+networks:
+  local:
+    external:
+      name: local
