@@ -127,7 +127,7 @@ DROP INDEX idx_order_datetime ON `orders`;
 sleep 365d # sleep for 1 yr
 ```
 这个主要原因是保持容器在那，让health-check得以不断的执行：
-```
+```YAML
       healthcheck:
         test: /verify-schema-version.sh mysql root hello123 local_orders
         interval: 60s
