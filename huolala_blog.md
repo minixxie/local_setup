@@ -15,23 +15,23 @@ docker ps -a
 为了提高开发人员每天的工作效率，local setup(本地环境搭建)是个不可或缺的环节。目前lalamove团队 (即货拉拉公司的海外团队，驻扎于香港九龙塘) 正在使用这种简单有效的本地环境搭建方法。
 
 有一个统一的本地环境搭建方法，可以：
-1. 提高开发人员每天的工作效率
-2. 让新员工尽快上手
-3. 确保大家的环境一致
-4. 减少和生产环境差异，减少差异导致的问题
+1. 提高工作效率
+2. 加速新人学习
+3. 确保环境一致
+4. 减少生产环境差异
 
-### 提高开发人员每天的工作效率
+### 提高工作效率
 一套统一标准的本地环境搭建，如何可以提高开发人员每天的工作效率呢？
 这要讲到这个docker这个工具了。docker最近几年还是很火，成为了业界容器化的标准。对docker太多介绍这里就不说了，大家可以网上搜索更多的资料。
 简单来说docker是一个进程隔离层，把每个进程隔离在一个独立的箱子里，可以有自己的IP地址、自己的process ID(pid)、自己的文件系统，让他的操作只限于一个范围内，对于系统会更安全。因为隔离在箱子里，而docker又提供了针对这些箱子的统一接口，（如docker start、docker kill等），所以针对各种服务的操作命令也可以统一起来。运维人员可以把这些箱子放一起排齐了，就像是一个个集装箱一样，所以docker的图标就用了一堆集装箱。
 
-### 让新员工尽快上手
+### 加速新人学习
 这套使用docker + docker-compose的本地环境，因为只需要新员工安装docker和docker-compose，不需要额外的任何软件，只要这两款软件版本符合就可以马上搭起来环境来玩了。可以说员工第一天就马上上手了。而且，docker + docker-compose这个标准可以执行在不同的OS上：Linux、MacOS、Windows都没问题。docker还提供了统一的标准接口来启动、停止、重启服务。所以不需要去特定学习各种不同语言的启动方式（如java用JRE、golang用go命令、nodejs还要`npm install`或yarn等）
 
-### 确保大家的环境一致
-因为docker是一套标准，大家都被逼用相同的方式来执行程序。再说docker容器里使用什么版本、插件，都在`Dockerfile`和`docker-compose.yml`定义好，放在代码仓库里，所以不同员工不会出现使用不同PHP版本的情况，不会出现环境变量不一致的情况，这些环境的差异往往是导致It works on my machine的问题。
+### 确保环境一致
+因为docker是一套标准，大家都被要求用相同的方式来执行程序。再说docker容器里使用什么版本、插件，都在`Dockerfile`和`docker-compose.yml`定义好，放在代码仓库里，所以不同员工不会出现使用不同PHP版本的情况，不会出现环境变量不一致的情况，这些环境的差异往往是导致It works on my machine的问题。
 
-### 减少和生产环境差异，减少差异导致的问题
+### 减少生产环境差异
 讲到环境上的差异，docker确实还可以解决非生产环境和生产环境不一致的情况。因为docker可以执行在不同的OS上，所以可以轻易的把非常类似生产的环境也用同样的方式执行在本机上。这对服务器用Linux而本机用Windows的同学们帮助很大。因为这种差异可以说是极大的。要减少和生产环境的差异，前提也需要运维团队在生产环境也做容器化。简单的可以也用docker + docker-compose，先进一点可以用k8s（能提供应用横向扩展的功能），但同时要在本机环境上也搭建k8s（如使用minikube）。此文章只会探讨使用docker + docker-compose的情况。
 
 为什么要减少和生产环境差异？很简单，这样你在本机做的功夫，测试过的东西，就不会白费了。要不然“能运作”只是在你本机的情况，并不代表上生产还能运作。
@@ -58,8 +58,8 @@ Building orders_db
 Step 1/3 : FROM mysql:8.0.12
 ...
 ```
-`Makefile`里预先已经写好命令，使用docker-compose命令并且出发docker构建(`--build`)，就会构建docker镜像并且用容器的方式来执行系统的各个部分。这些有：
-1. `nginx_proxy` - nginx反响代理服务
+`Makefile`里预先已经写好命令，使用docker-compose命令并且触发docker构建(`--build`)，就会构建docker镜像并且用容器的方式来执行系统的各个部分。这些有：
+1. `nginx_proxy` - nginx反向代理服务
 2. `local_orders` - orders微服务，`local_`前缀代表这个是本机环境的
 3. `mysql` - mysql数据库
 4. `local_orders_db` - orders的数据库
@@ -95,7 +95,7 @@ services:
         test: /verify-schema-version.sh mysql root hello123 local_orders
 ...
 ```
-首先`mysql_migrate`是一个`mysql`镜像+`golang/migrate`工具的镜像。`golang/migrate`工具是一个很好用的数据库版本控制工具，详情请看：https://github.com/golang-migrate/migrate
+首先`mysql_migrate`是一个`mysql`镜像+`golang/migrate`工具的镜像。`golang/migrate`工具是一个很好用的数据库版本控制工具，详情请见：https://github.com/golang-migrate/migrate
 
 简单来说，使用`golang/migrate`的前提是我们要把数据库结构的每次改动，录入为SQL文件，提交到git仓库里：
 ```
@@ -128,7 +128,7 @@ DROP INDEX idx_order_datetime ON `orders`;
 ```BASH
 sleep 365d # sleep for 1 yr
 ```
-这个主要原因是保持容器在那，让health-check得以不断的执行：
+这个主要原因是保留容器，让health-check得以不断的执行：
 ```YAML
       healthcheck:
         test: /verify-schema-version.sh mysql root hello123 local_orders
@@ -161,7 +161,7 @@ CONTAINER ID        IMAGE                        COMMAND                  CREATE
 启动的顺序对于本机环境来说很重要。如果启动早了，应用程序没有处理好的话，就会报错说连不上mysql，服务就会死掉。
 
 ## 测试
-在本机可以测试API，是能玩起来的必须一步。同学们会有很多不同的工具可以选择，比如PostMan、VS Code自带的http文件、cURL等，甚至可以用mocha做API测试。此处为了简单只用cURL：
+在本机可以测试API，是能玩起来的必要步骤。同学们会有很多不同的工具可以选择，比如PostMan、VS Code自带的http文件、cURL等，甚至可以用mocha做API测试。此处为了简单只用cURL：
 ```BASH
 Simons-MacBook-Pro:local_setup simon.tse$ ./test/create_order.sh 
 Note: Unnecessary use of -X or --request, POST is already inferred.
